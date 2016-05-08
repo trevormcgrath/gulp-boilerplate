@@ -18,9 +18,24 @@ Navigate to the location of where you would like to store this repository in the
     npm install
 ```
 
+##Usage
+To start developing your project you simply need to run the `gulp` command
+
+```markup
+    gulp
+```
+
+Backups of your project will automatically be created every 2 minutes but can be changed by altering the `backupTime` variable in the **gulpfile.js**.
+
+Once your project is ready to be deployed you can run the `gulp build` task to generate a distribution folder including both minified and un-minified JavaScript and CSS files.
+
+```markup
+    gulp build
+```
+
 ##devDependencies
 
-* ["browser-sync": "^2.8.0"](https://www.npmjs.com/package/browser-sync)
+* ["browser-sync": "^2.8.0"](https://wwwgulp.npmjs.com/package/browser-sync)
 * ["del": "^2.2.0"](https://www.npmjs.com/package/del)
 * ["gulp": "^3.9.0"](https://www.npmjs.com/package/gulp)
 * ["gulp-clean-css": "^2.0.6"](https://www.npmjs.com/package/gulp-clean-css)
