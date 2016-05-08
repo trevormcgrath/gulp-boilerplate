@@ -3,7 +3,7 @@
 var gulp = require('gulp'),
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
-    watch = require('gulp-watch'),
+    //    watch = require('gulp-watch'),
     browserSync = require('browser-sync').create(),
     del = require('del'),
     uglify = require('gulp-uglify'),

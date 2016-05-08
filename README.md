@@ -1,11 +1,30 @@
-#Basic Gulp Boilerplate
+#Basic Gulp Boilerplate + SCSS Compiling
 
-This is a basic gulp boilerplate for small static html projects.
+This is a basic gulp boilerplate for small static html projects. 
 
 ##Features
 * SCSS compiling
 * Build Task
 * Automatic Project Backup
-* JavaScript & CSS minification
+* Minify JavaScript & CSS files
 * Browser-sync
-* Automatic Browser-Sync reload on change of JS, HTML and CSS files
+
+##Installation
+Navigate to the location of where you would like to store this repository in the terminal then proceed to the commands below.
+
+```markup
+    git clone https://github.com/ChynoDeluxe/gulp-boilerplate.git
+    cd gulp-boilerplate
+    npm install
+```
+
+##devDependencies
+
+* ["browser-sync": "^2.8.0"](https://www.npmjs.com/package/browser-sync)
+* ["del": "^2.2.0"](https://www.npmjs.com/package/del)
+* ["gulp": "^3.9.0"](https://www.npmjs.com/package/gulp)
+* ["gulp-clean-css": "^2.0.6"](https://www.npmjs.com/package/gulp-clean-css)
+* ["gulp-rename": "^1.2.2"](https://www.npmjs.com/package/gulp-rename)
+* ["gulp-sass": "^2.0.4"](https://www.npmjs.com/package/gulp-sass)
+* ["gulp-sourcemaps": "^1.5.2"](https://www.npmjs.com/package/gulp-sourcemaps)
+* ["gulp-uglify": "^1.5.3"](https://www.npmjs.com/package/gulp-uglify)
