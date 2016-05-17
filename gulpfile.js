@@ -1,14 +1,13 @@
 'use strict';
 
-var gulp = require('gulp'),
+var browserSync = require('browser-sync').create(),
+    cleanCSS = require('gulp-clean-css'),
+    del = require('del'),
+    gulp = require('gulp'),
+    rename = require('gulp-rename'),
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
-    //    watch = require('gulp-watch'),
-    browserSync = require('browser-sync').create(),
-    del = require('del'),
-    uglify = require('gulp-uglify'),
-    rename = require('gulp-rename'),
-    cleanCSS = require('gulp-clean-css');
+    uglify = require('gulp-uglify');
 
 var src = {
     app: './app/',
@@ -17,31 +16,37 @@ var src = {
     css: 'assets/css/',
     js: 'assets/js/',
     scss: 'assets/scss/'
-}
+};
 
-var backupTime = 120000;
+var saveCount = 0,
+    savesUntilBackup = 4;
 
-//BROSWER SYNC + WATCH SASS FILES
+/*================================
+    BROSWER SYNC + WATCH TASK
+================================*/
 gulp.task('serve', ['sass'], function () {
     browserSync.init({
         server: src.app
-    })
-    gulp.watch(src.app + src.scss + '*.scss', ['sass']);
-    gulp.watch([src.app + '*.html', src.app + src.js + '*.js']).on('change', browserSync.reload);
+    });
+    gulp.watch(src.app + src.scss + '**/*.scss', ['sass', 'backup']);
+    gulp.watch(src.app + '*.html',['backup']).on('change', browserSync.reload);
+    gulp.watch(src.app + src.js + '*.js', ['backup']).on('change', browserSync.reload);
 });
 
-//COMPILE SASS/SCSS FILES TO CSS
+/*================================
+    SASS TASK
+================================*/
 gulp.task('sass', function () {
     gulp.src(src.app + src.scss + 'main.scss')
-        .pipe(sass().on('error', sass.logError))
         .pipe(sourcemaps.init())
-        .pipe(sass())
-        .pipe(sourcemaps.write('./'))
+        .pipe(sass().on('error', sass.logError))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest(src.app + src.css))
         .pipe(browserSync.stream());
 });
-
-//DISTRIBUTION TASK
+/*================================
+    DISTRIBUTION TASK
+================================*/
 gulp.task('build', ['clean', 'build:html', 'build:css', 'build:js', 'minify']);
 
 //DELETE PREVIOUS DIST FOLDER
@@ -64,7 +69,9 @@ gulp.task('build:js', function () {
         .pipe(gulp.dest(src.dist + src.js));
 });
 
-//MINIFIY TASK
+/*================================
+    MINIFIY TASK
+================================*/
 gulp.task('minify', ['minify:js', 'minify:css']);
 //MINIFY JAVASCRIPT
 gulp.task('minify:js', function () {
@@ -81,18 +88,30 @@ gulp.task('minify:css', function () {
         .pipe(gulp.dest(src.dist + src.css));
 });
 
-//BACKUP APP FOLDER
+/*================================
+    BACKUP TASK
+================================*/
+
 gulp.task('backup', function () {
+    console.log("Project was saved " + saveCount + " times");
+
     function backup() {
         del.sync(src.backup);
         gulp.src(src.app + '**/*')
             .pipe(gulp.dest('./backup'));
         console.log("Project Backed up " + new Date());
     }
-    backup();
-    //BACKUP AUTOMATICALLY AFTER DURATION
-    setInterval(backup, backupTime);
+    //BACKUP AUTOMATICALLY AFTER SAVECOUNT    
+    if (saveCount === savesUntilBackup) {
+        saveCount = 0;
+        backup();
+    } else {
+        saveCount += 1;
+    }
+
 });
 
-//DEFAULT TASK
+/*================================
+    DEFAULT TASK
+================================*/
 gulp.task('default', ['serve', 'backup']);
