@@ -10,7 +10,7 @@ var browserSync = require('browser-sync').create(),
     uglify = require('gulp-uglify');
 
 var src = {
-    app: './app/',
+    lib: './lib/',
     dist: './dist/',
     backup: './backup/',
     css: 'assets/css/',
@@ -26,22 +26,22 @@ var saveCount = 0,
 ================================*/
 gulp.task('serve', ['sass'], function () {
     browserSync.init({
-        server: src.app
+        server: src.lib
     });
-    gulp.watch(src.app + src.scss + '**/*.scss', ['sass', 'backup']);
-    gulp.watch(src.app + '*.html',['backup']).on('change', browserSync.reload);
-    gulp.watch(src.app + src.js + '*.js', ['backup']).on('change', browserSync.reload);
+    gulp.watch(src.lib + src.scss + '**/*.scss', ['sass', 'backup']);
+    gulp.watch(src.lib + '*.html',['backup']).on('change', browserSync.reload);
+    gulp.watch(src.lib + src.js + '*.js', ['backup']).on('change', browserSync.reload);
 });
 
 /*================================
     SASS TASK
 ================================*/
 gulp.task('sass', function () {
-    gulp.src(src.app + src.scss + 'main.scss')
+    gulp.src(src.lib + src.scss + 'main.scss')
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest(src.app + src.css))
+        .pipe(gulp.dest(src.lib + src.css))
         .pipe(browserSync.stream());
 });
 /*================================
@@ -55,17 +55,17 @@ gulp.task('clean', function () {
 });
 //COPY HTML FILES TO DIST FOLDER
 gulp.task('build:html', function () {
-    gulp.src(src.app + '*.html')
+    gulp.src(src.lib + '*.html')
         .pipe(gulp.dest(src.dist));
 });
 //COPY COMPILED CSS FILES TO DIST FOLDER
 gulp.task('build:css', function () {
-    gulp.src(src.app + src.css + '*.css')
+    gulp.src(src.lib + src.css + '*.css')
         .pipe(gulp.dest(src.dist + src.css));
 });
 //COPY JAVASCRIPT FILES TO DIST FOLDER
 gulp.task('build:js', function () {
-    gulp.src(src.app + src.js + '*.js')
+    gulp.src(src.lib + src.js + '*.js')
         .pipe(gulp.dest(src.dist + src.js));
 });
 
@@ -75,14 +75,14 @@ gulp.task('build:js', function () {
 gulp.task('minify', ['minify:js', 'minify:css']);
 //MINIFY JAVASCRIPT
 gulp.task('minify:js', function () {
-    gulp.src(src.app + src.js + '*.js')
+    gulp.src(src.lib + src.js + '*.js')
         .pipe(uglify())
         .pipe(rename('main.min.js'))
         .pipe(gulp.dest(src.dist + src.js));
 });
 //MINIFY CSS
 gulp.task('minify:css', function () {
-    gulp.src(src.app + src.css + '*.css')
+    gulp.src(src.lib + src.css + '*.css')
         .pipe(cleanCSS())
         .pipe(rename('main.min.css'))
         .pipe(gulp.dest(src.dist + src.css));
@@ -96,7 +96,7 @@ gulp.task('backup', function () {
     var backupMessage = "";
     function backup() {
         del.sync(src.backup);
-        gulp.src(src.app + '**/*')
+        gulp.src(src.lib + '**/*')
             .pipe(gulp.dest('./backup'));        
         
         backupMessage = "===============================\n\n";
