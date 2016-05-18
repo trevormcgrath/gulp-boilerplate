@@ -93,13 +93,17 @@ gulp.task('minify:css', function () {
 ================================*/
 
 gulp.task('backup', function () {
-    console.log("Project was saved " + saveCount + " times");
-
+    var backupMessage = "";
     function backup() {
         del.sync(src.backup);
         gulp.src(src.app + '**/*')
-            .pipe(gulp.dest('./backup'));
-        console.log("Project Backed up " + new Date());
+            .pipe(gulp.dest('./backup'));        
+        
+        backupMessage = "===============================\n\n";
+        backupMessage += "Project Backed up \n" + new Date();
+        backupMessage += "\n\n===============================";
+
+        console.log(backupMessage);
     }
     //BACKUP AUTOMATICALLY AFTER SAVECOUNT    
     if (saveCount === savesUntilBackup) {

@@ -13,24 +13,29 @@ This is a basic gulp boilerplate for small static html projects.
 Navigate to the location of where you would like to store this repository in the terminal then proceed to the commands below.
 
 ```markup
-    git clone https://github.com/ChynoDeluxe/gulp-boilerplate.git
-    cd gulp-boilerplate
-    npm install
+    $ git clone https://github.com/ChynoDeluxe/gulp-boilerplate.git
+    $ cd gulp-boilerplate
+    $ npm install
+```
+**Install Gulp Globally**
+```markup
+    $ [sudo] npm install gulp -g
 ```
 
 ##Usage
 To start developing your project you simply need to run the `gulp` command
 
 ```markup
-    gulp
+    $ gulp
 ```
 
-Backups of your project will automatically be created every 2 minutes but can be changed by altering the `backupTime` variable in the **gulpfile.js**.
+Backups of your project will automatically be created every 4 saves but can be changed by altering the `savesUntilBackup` variable in the **gulpfile.js**.
 
+###Build Task
 Once your project is ready to be deployed you can run the `gulp build` task to generate a distribution folder including both minified and un-minified JavaScript and CSS files.
 
 ```markup
-    gulp build
+    $ gulp build
 ```
 
 ##devDependencies
