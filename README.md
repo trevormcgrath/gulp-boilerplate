@@ -31,11 +31,11 @@ To start developing your project you simply need to run the `gulp` command
 
 Backups of your project will automatically be created every 4 saves but can be changed by altering the `savesUntilBackup` variable in the **gulpfile.js**.
 
-###Build Task
-Once your project is ready to be deployed you can run the `gulp build` task to generate a distribution folder including both minified and un-minified JavaScript and CSS files.
+###Deploy Task
+Once your project is ready to be deployed you can run the `gulp deploy` task to generate a distribution folder including both minified and un-minified JavaScript and CSS files.
 
 ```markup
-    $ gulp build
+    $ gulp deploy
 ```
 
 ##devDependencies
