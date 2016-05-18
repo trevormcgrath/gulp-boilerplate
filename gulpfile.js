@@ -29,7 +29,7 @@ gulp.task('serve', ['sass'], function () {
         server: src.lib
     });
     gulp.watch(src.lib + src.scss + '**/*.scss', ['sass', 'backup']);
-    gulp.watch(src.lib + '*.html',['backup']).on('change', browserSync.reload);
+    gulp.watch(src.lib + '*.html', ['backup']).on('change', browserSync.reload);
     gulp.watch(src.lib + src.js + '*.js', ['backup']).on('change', browserSync.reload);
 });
 
@@ -47,26 +47,17 @@ gulp.task('sass', function () {
 /*================================
     DISTRIBUTION TASK
 ================================*/
-gulp.task('build', ['clean', 'build:html', 'build:css', 'build:js', 'minify']);
+gulp.task('deploy', ['clean', 'build', 'minify']);
 
 //DELETE PREVIOUS DIST FOLDER
 gulp.task('clean', function () {
     del.sync(src.dist);
 });
-//COPY HTML FILES TO DIST FOLDER
-gulp.task('build:html', function () {
-    gulp.src(src.lib + '*.html')
-        .pipe(gulp.dest(src.dist));
-});
-//COPY COMPILED CSS FILES TO DIST FOLDER
-gulp.task('build:css', function () {
-    gulp.src(src.lib + src.css + '*.css')
-        .pipe(gulp.dest(src.dist + src.css));
-});
-//COPY JAVASCRIPT FILES TO DIST FOLDER
-gulp.task('build:js', function () {
-    gulp.src(src.lib + src.js + '*.js')
-        .pipe(gulp.dest(src.dist + src.js));
+
+//COPY LIB FOLDER TO DIS FOLDER BUT EXCLUDE SCSS FOLDER
+gulp.task('build', function () {
+    gulp.src([src.lib + '**', '!' + src.lib + src.scss, '!' + src.lib + src.scss + '**/*'])
+        .pipe(gulp.dest(src.dist))
 });
 
 /*================================
@@ -93,12 +84,41 @@ gulp.task('minify:css', function () {
 ================================*/
 
 gulp.task('backup', function () {
-    var backupMessage = "";
+    var backupMessage = "",
+        date = new Date(),
+        month = date.getMonth(),
+        day = date.getDate(),
+        year = date.getFullYear(),
+        hour = date.getHours(),
+        minutes = date.getMinutes(),
+        seconds = date.getSeconds();
+
+    function isLessThan10(num) {
+        return num < 10;
+    }
+
+    function addZero(num) {
+        return "0" + num;
+    }
+
+    function getDate() {
+        var dateTime = "_";
+        dateTime += isLessThan10(month) ? addZero(month) : month;
+        dateTime += isLessThan10(day) ? addZero(day) : day;
+        dateTime += year;
+        dateTime += "_";
+        dateTime += isLessThan10(hour) ? addZero(hour) : (hour > 12 ? hour - 12 : hour);
+        dateTime += isLessThan10(minutes) ? addZero(minutes) : minutes;
+        dateTime += isLessThan10(seconds) ? addZero(seconds) : seconds;
+
+        return dateTime;
+    }
+
     function backup() {
-        del.sync(src.backup);
+        //        del.sync(src.backup);
         gulp.src(src.lib + '**/*')
-            .pipe(gulp.dest('./backup'));        
-        
+            .pipe(gulp.dest('./backup/' + getDate()));
+
         backupMessage = "===============================\n\n";
         backupMessage += "Project Backed up \n" + new Date();
         backupMessage += "\n\n===============================";
