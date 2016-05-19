@@ -7,13 +7,15 @@ var browserSync = require('browser-sync').create(),
     rename = require('gulp-rename'),
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
-    uglify = require('gulp-uglify');
+    uglify = require('gulp-uglify'),
+    zip = require('gulp-zip');
 
 //CACHE FOLDER LOCATIONS
 var src = {
     lib: './lib/',
     dist: './dist/',
-    backup: './backup/',
+    backup: './lib_backup/',
+    archive: './lib_archive/',
     css: 'assets/css/',
     js: 'assets/js/',
     scss: 'assets/scss/'
@@ -21,8 +23,10 @@ var src = {
 
 //INIT SAVE COUNT
 var saveCount = 0,
-    //SAVES REQUIRE BEFORE BACKUP
-    savesUntilBackup = 4;
+    //SAVES BEFORE BACKUP
+    savesUntilBackup = 4,
+    //SAVES BEFORE ZIP
+    savesUntilZip = 10;
 
 /*================================
     BROSWER SYNC + WATCH TASK
@@ -156,7 +160,6 @@ gulp.task('backup', function () {
     }
 
     function backup() {
-        //        del.sync(src.backup);
         //CONSOLE LOG BACKUP MESSAGE AND DATE
         function logDate() {
             backupMessage = "===============================\n\n";
@@ -168,18 +171,38 @@ gulp.task('backup', function () {
         //LOCATE LIB FOLDER
         gulp.src(src.lib + '**/*')
             //COPY TO BACKUP FOLDER WITH DATE
-            .pipe(gulp.dest('./backup/' + getDate()));
+            .pipe(gulp.dest(src.backup + getDate()));
         //LOG DATE OF BACKUP
         logDate();
     }
 
-    //BACKUP AUTOMATICALLY AFTER SAVECOUNT    
-    if (saveCount === savesUntilBackup) {
-        saveCount = 0;
-        backup();
-    } else {
-        saveCount += 1;
+    function zipBackups() {
+        var excludeArchive = [
+            //LOCATE LIB FOLDER
+            src.backup + '**',
+            //EXLCUDE SCSS FOLDER
+            '!' + src.archive,
+            //EXCLUDE SCSS FILES
+            '!' + src.archive + '**/*'
+        ];
+
+        gulp.src(excludeArchive)
+            //ZIP BACKUPS
+            .pipe(zip(getDate() + '.zip'))
+            //COPY TO DIST FOLDER
+            .pipe(gulp.dest(src.archive));
+
+        console.log("Backup folder was Archived");
     }
+
+    //BACKUP AUTOMATICALLY AFTER SAVECOUNT  
+    if (saveCount % savesUntilBackup === 0) {
+        backup();
+    } else if (saveCount % savesUntilZip === 0) {
+        zipBackups();
+    }
+
+    saveCount += 1;
 
 });
 
