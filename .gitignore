@@ -1,5 +1,6 @@
 /.sass-cache/*
 /node_modules/*
 **/*.css.map
-/build/*
+/lib_backup/*
+/lib_archive/*
 /backup/*
