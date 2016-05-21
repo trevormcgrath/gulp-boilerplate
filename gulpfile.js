@@ -48,7 +48,7 @@ gulp.task('serve', ['sass'], function () {
 ================================*/
 gulp.task('sass', function () {
     //LOCATE MAIN.SCSS FILE
-    gulp.src(src.lib + src.scss + 'main.scss')
+    return gulp.src(src.lib + src.scss + 'main.scss')
         //INIT SOURCEMAPS
         .pipe(sourcemaps.init())
         //COMPILE SCSS IF NO ERROR
@@ -73,7 +73,7 @@ gulp.task('clean', function () {
 
 //BUILD
 gulp.task('build', function () {
-    gulp.src([
+    return gulp.src([
         //LOCATE LIB FOLDER
         src.lib + '**',
         //EXLCUDE SCSS FOLDER
@@ -93,7 +93,7 @@ gulp.task('minify', ['minify:js', 'minify:css']);
 //MINIFY JAVASCRIPT
 gulp.task('minify:js', function () {
     //LOCATE JS FILES IN LIB JS FOLDER
-    gulp.src(src.lib + src.js + '*.js')
+    return gulp.src(src.lib + src.js + '*.js')
         //MINIFY
         .pipe(uglify())
         //RENAME WITH .MIN.JS PREFIX
@@ -104,7 +104,7 @@ gulp.task('minify:js', function () {
 //MINIFY CSS
 gulp.task('minify:css', function () {
     //LOCATE CSS FILES IN LIB FOLDER
-    gulp.src(src.lib + src.css + '*.css')
+    return gulp.src(src.lib + src.css + '*.css')
         //MINIFY
         .pipe(cleanCSS())
         //RENAME WITH .MIN.CSS PREFIX
@@ -177,22 +177,16 @@ gulp.task('backup', function () {
     }
 
     function zipBackups() {
-        var excludeArchive = [
-            //LOCATE LIB FOLDER
-            src.backup + '**',
-            //EXLCUDE SCSS FOLDER
-            '!' + src.archive,
-            //EXCLUDE SCSS FILES
-            '!' + src.archive + '**/*'
-        ];
+        console.log("Backup folder was Archived");
 
-        gulp.src(excludeArchive)
+        gulp.src(src.backup + '**')
             //ZIP BACKUPS
             .pipe(zip(getDate() + '.zip'))
             //COPY TO DIST FOLDER
-            .pipe(gulp.dest(src.archive));
-
-        console.log("Backup folder was Archived");
+            .pipe(gulp.dest(src.archive))
+            .on('end', function () {
+                del.sync(src.backup);
+            });
     }
 
     //BACKUP AUTOMATICALLY AFTER SAVECOUNT  
