@@ -24,9 +24,9 @@ var src = {
 //INIT SAVE COUNT
 var saveCount = 0,
     //SAVES BEFORE BACKUP
-    savesUntilBackup = 4,
+    savesUntilBackup = 5,
     //SAVES BEFORE ZIP
-    savesUntilZip = 10;
+    savesUntilZip = savesUntilBackup * 10;
 
 /*================================
     BROSWER SYNC + WATCH TASK
@@ -168,18 +168,18 @@ gulp.task('backup', function () {
             console.log(backupMessage);
         }
 
-        //LOCATE LIB FOLDER
-        gulp.src(src.lib + '**/*')
-            //COPY TO BACKUP FOLDER WITH DATE
-            .pipe(gulp.dest(src.backup + getDate()));
         //LOG DATE OF BACKUP
         logDate();
+        //LOCATE LIB FOLDER
+        return gulp.src(src.lib + '**/*')
+            //COPY TO BACKUP FOLDER WITH DATE
+            .pipe(gulp.dest(src.backup + getDate()));
     }
 
     function zipBackups() {
         console.log("Backup folder was Archived");
 
-        gulp.src(src.backup + '**')
+        return gulp.src(src.backup + '**')
             //ZIP BACKUPS
             .pipe(zip(getDate() + '.zip'))
             //COPY TO DIST FOLDER
@@ -190,10 +190,11 @@ gulp.task('backup', function () {
     }
 
     //BACKUP AUTOMATICALLY AFTER SAVECOUNT  
-    if (saveCount % savesUntilBackup === 0) {
-        backup();
-    } else if (saveCount % savesUntilZip === 0) {
+    if (saveCount != 0 && saveCount % savesUntilZip === 0) {
         zipBackups();
+        backup();
+    } else if (saveCount != 0 && saveCount % savesUntilBackup === 0) {
+        backup();
     }
 
     saveCount += 1;

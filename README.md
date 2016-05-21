@@ -48,3 +48,4 @@ Once your project is ready to be deployed you can run the `gulp deploy` task to 
 * ["gulp-sass": "^2.0.4"](https://www.npmjs.com/package/gulp-sass)
 * ["gulp-sourcemaps": "^1.5.2"](https://www.npmjs.com/package/gulp-sourcemaps)
 * ["gulp-uglify": "^1.5.3"](https://www.npmjs.com/package/gulp-uglify)
+* ["gulp-zip": "^3.2.0"](https://www.npmjs.com/package/gulp-zip)
