@@ -134,7 +134,7 @@ gulp.task('backup', function () {
         //INIT BACKUP MESSAGE
         var backupMessage = "";
         backupMessage = "===============================\n\n";
-        backupMessage += "Project " + type + "\n" + new Date();
+        backupMessage += type + " project\n" + new Date();
         backupMessage += "\n\n===============================";
         console.log(backupMessage);
     }
@@ -167,7 +167,7 @@ gulp.task('backup', function () {
         return dateTime;
     }
 
-    function backup() {
+    function backupProject() {
         //LOG DATE OF BACKUP
         logDate("Backed Up");
         //LOCATE LIB FOLDER
@@ -192,7 +192,7 @@ gulp.task('backup', function () {
                     '!' + src.backup
                 ]);
                 //BACKUP PROJECT
-                backup();
+                backupProject();
             });
         logDate("Archived");
     }
@@ -200,8 +200,8 @@ gulp.task('backup', function () {
     //BACKUP AUTOMATICALLY AFTER SAVECOUNT  
     if (saveCount != 0 && saveCount % savesUntilZip === 0) {
         archiveBackups();
-    } else if (saveCount != 0 && saveCount % savesUntilBackup === 0) {
-        backup();
+    } else if (saveCount % savesUntilBackup === 0) {
+        backupProject();
     }
 
     saveCount += 1;
@@ -211,4 +211,5 @@ gulp.task('backup', function () {
 /*================================
     DEFAULT TASK
 ================================*/
+//RUN SERVER, WATCH FILES AND RUN INITIAL BACKUP
 gulp.task('default', ['serve', 'backup']);
