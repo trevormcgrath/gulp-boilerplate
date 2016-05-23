@@ -3,4 +3,3 @@
 **/*.css.map
 /lib_backup/*
 /lib_archive/*
-/backup/*
