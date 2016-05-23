@@ -12,10 +12,12 @@ var browserSync = require('browser-sync').create(),
 
 //CACHE FOLDER LOCATIONS
 var src = {
+    //ROOT FOLDERS
     lib: './lib/',
     dist: './dist/',
     backup: './lib_backup/',
     archive: './lib_archive/',
+    //SUB FOLDERS
     css: 'assets/css/',
     js: 'assets/js/',
     scss: 'assets/scss/'
@@ -118,11 +120,8 @@ gulp.task('minify:css', function () {
 ================================*/
 
 gulp.task('backup', function () {
-    //INIT BACKUP MESSAGE
-    var backupMessage = "",
-
-        //CACHE CURRENT DATE INFO
-        date = new Date(),
+    //CACHE CURRENT DATE INFO
+    var date = new Date(),
         month = date.getMonth(),
         day = date.getDate(),
         year = date.getFullYear(),
@@ -130,6 +129,15 @@ gulp.task('backup', function () {
         minutes = date.getMinutes(),
         seconds = date.getSeconds();
 
+    //CONSOLE LOG BACKUP MESSAGE AND DATE
+    function logDate(type) {
+        //INIT BACKUP MESSAGE
+        var backupMessage = "";
+        backupMessage = "===============================\n\n";
+        backupMessage += "Project " + type + "\n" + new Date();
+        backupMessage += "\n\n===============================";
+        console.log(backupMessage);
+    }
     //GET CURRENT DATE FOR FOLDER NAMING
     function getDate() {
         //CHECK IF NUM IS LESS THAN 10
@@ -149,8 +157,8 @@ gulp.task('backup', function () {
         //YEAR
         dateTime += year;
         dateTime += "_";
-        //IF HOUR IS LESS THAN 10, ADD ZERO, IF HOUR IS GREATER THAN 12, MINUS 12, ELSE HOUR
-        dateTime += isLessThan10(hour) ? addZero(hour) : (hour > 12 ? hour - 12 : hour);
+        //IF HOUR IS LESS THAN 10, ADD ZERO, ELSE HOUR
+        dateTime += isLessThan10(hour) ? addZero(hour) : hour;
         //IF MINUTES IS LESS THAN 10, ADD ZERO, ELSE MINUTES
         dateTime += isLessThan10(minutes) ? addZero(minutes) : minutes;
         //IF SECONDS IS LESS THAN 10, ADD ZERO, ELSE SECONDS
@@ -160,39 +168,38 @@ gulp.task('backup', function () {
     }
 
     function backup() {
-        //CONSOLE LOG BACKUP MESSAGE AND DATE
-        function logDate() {
-            backupMessage = "===============================\n\n";
-            backupMessage += "Project Backed up \n" + new Date();
-            backupMessage += "\n\n===============================";
-            console.log(backupMessage);
-        }
-
         //LOG DATE OF BACKUP
-        logDate();
+        logDate("Backed Up");
         //LOCATE LIB FOLDER
-        return gulp.src(src.lib + '**/*')
+        gulp.src(src.lib + '**/*')
             //COPY TO BACKUP FOLDER WITH DATE
             .pipe(gulp.dest(src.backup + getDate()));
     }
 
-    function zipBackups() {
-        console.log("Backup folder was Archived");
-
-        return gulp.src(src.backup + '**')
+    function archiveBackups() {
+        gulp.src(src.backup + '**')
             //ZIP BACKUPS
             .pipe(zip(getDate() + '.zip'))
             //COPY TO DIST FOLDER
             .pipe(gulp.dest(src.archive))
+            //AFTER ARCHIVE
             .on('end', function () {
-                del.sync(src.backup);
+                //DELETE BACKUP FOLDERS
+                del([
+                    //FOLDERS IN BACKUP FOLDER
+                    src.backup + '**/*',
+                    //EXCLUDE BACKUP ROOT FOLDER
+                    '!' + src.backup
+                ]);
+                //BACKUP PROJECT
+                backup();
             });
+        logDate("Archived");
     }
 
     //BACKUP AUTOMATICALLY AFTER SAVECOUNT  
     if (saveCount != 0 && saveCount % savesUntilZip === 0) {
-        zipBackups();
-        backup();
+        archiveBackups();
     } else if (saveCount != 0 && saveCount % savesUntilBackup === 0) {
         backup();
     }
